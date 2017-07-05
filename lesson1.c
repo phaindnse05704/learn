@@ -25,6 +25,11 @@ int stackCount(stack_t* stk) {
   return stk->index;
 }
 
+void destroyStack(stack_t* stk) {
+  free(stk->data);
+  stk = NULL;
+}
+
 //===================main program================
 void main() {
   stack_t stk;
