@@ -5,71 +5,129 @@ typedef struct {
   int *data;
   int index;
   int maxIndex;
-}linkedList;
+} linked_list_type;
 
-void initList(linkedList* llist) {
-  llist->index = 0;
+void initList(linked_list_type* list, int maxIndex) {
+  list->index = 0;
+  list->maxIndex = maxIndex;
+  list->data = malloc(maxIndex * sizeof(int));
 }
 
-int listIsFull(linkedList* llist) {
-  return (llist->index == llist->maxIndex);
+int listIsFull(linked_list_type* list) {
+  return (list->index == list->maxIndex);
 }
 
-int listIsEmpty(linkedList* llist) {
-  return (llist->index == 0);
+int listIsEmpty(linked_list_type* list) {
+  return (list->index == 0);
 }
 
-int insertElement(linkedList* llist, int element, int position) {
-  if (listIsFull(&llist)) {
+int insertElement(linked_list_type* list, int element, int position) {
+  if (listIsFull(list)) {
     printf("Can't insert, list is full!\n");
     return 0;
   }
 
-  if ((position < 0) || (position > index)) {
+  if ((position < 0) || (position > list->index)) {
     printf("Invalid position");
     return 0;
   }
 
   int i;
-  for (i = llist->index; i > position; i--) {
-    llist->data[i] = llist->data[i-1];
+  for (i = list->index; i > position; i--) {
+    list->data[i] = list->data[i-1];
   }
-  llist->data[position] = element;
-  llist->index++;
+  list->data[position] = element;
+  list->index++;
   return 1;
 }
 
-int pushElement(linkedList* llist, int element) {
-  if (listIsFull(&llist)) {
+int pushElement(linked_list_type* list, int element) {
+  if (listIsFull(list)) {
     printf("Can't insert, list is full!\n");
     return 0;
   }
 
-  llist->data[list->index++] = element;
+  list->data[list->index++] = element;
   return 1;
 }
 
-int deleteElement(linkedList* llist, int position) {
-  if (listIsEmpty(&llist)) {
+int deleteElement(linked_list_type* list, int position) {
+  if (listIsEmpty(list)) {
     printf("Can't delete, list is empty!\n");
     return 0;
   }
 
-  if ((position <= 0) || (position > index)) {
+  if ((position <= 0) || (position > list->index)) {
     printf("Invalid position");
     return 0;
   }
 
-  for (int i = position; i <= --llist->index; i++) {
-    llist->data[i] = llist->data[i+1];
+  for (int i = position; i <= --list->index; i++) {
+    list->data[i] = list->data[i+1];
   }
   return 1;
 }
 
-int listSearch(linkedList* llist, int element) {
+int listSearch(linked_list_type* list, int element) {
   int i;
-  for (i = 0; i < llist->index; i++) {
-    if (llist->data[i] == element) return (i+1);
+  for (i = 0; i < list->index; i++) {
+    if (list->data[i] == element) return (i+1);
   }
   return 0;
+}
+
+void destroyList(linked_list_type* list) {
+  free(list->data);
+  list->index = -1;
+  list->maxIndex = -1;
+  list = NULL;
+}
+
+void listShow(linked_list_type* list) {
+  printf("List has %d elements, they are: ", list->index);
+  for (int i = 0; i < list->index; i++) {
+    printf("%d", list->data[i]);
+    if (i == list->index-1){ printf(".\n");}
+    else printf(", ");
+  }
+}
+//================main program===================
+
+void main () {
+  //init list
+  linked_list_type list;
+  int index, maxIndex, element, position;
+  printf("Input index and maxIndex : ");
+  scanf("%d %d", &index, &maxIndex);
+  initList(&list, maxIndex);
+  listShow(&list);
+
+  //push elements
+  printf("Input element: \n");
+  for (int i = 1; i<=index; i++) {
+    printf("Element %d", i);
+    scanf("%d", &element);
+    pushElement(&list, element);
+  }
+  listShow(&list);
+
+  //insert element
+  printf("Input element and position to insert: ");
+  scanf("%d %d", &element, &position);
+  insertElement(&list, element, position);
+  listShow(&list);
+
+  //delete element
+  printf("Input position to delete: ");
+  scanf("%d", &position);
+  deleteElement(&list, position);
+  listShow(&list);
+
+  //search for specific element
+  printf("Input element value: ");
+  scanf("%d", &element);
+  printf("Element with value %d is at %d", element, listSearch(&list, element));
+
+  //destroy list
+  destroyList(&list);
 }
