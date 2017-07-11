@@ -33,10 +33,10 @@ int insertElement(linked_list_type* list, int element, int position) {
   }
 
   int i;
-  for (i = list->index; i > position; i--) {
+  for (i = list->index; i >= position; i--) {
     list->data[i] = list->data[i-1];
   }
-  list->data[position] = element;
+  list->data[position-1] = element;
   list->index++;
   return 1;
 }
@@ -62,9 +62,10 @@ int deleteElement(linked_list_type* list, int position) {
     return 0;
   }
 
-  for (int i = position; i <= --list->index; i++) {
+  for (int i = position-1; i < list->index; i++) {
     list->data[i] = list->data[i+1];
   }
+  list->index--;
   return 1;
 }
 
@@ -105,7 +106,7 @@ void main () {
   //push elements
   printf("Input element: \n");
   for (int i = 1; i<=index; i++) {
-    printf("Element %d", i);
+    printf("Element %d: ", i);
     scanf("%d", &element);
     pushElement(&list, element);
   }
@@ -130,4 +131,5 @@ void main () {
 
   //destroy list
   destroyList(&list);
+  printf("\nFree memory done!");
 }
